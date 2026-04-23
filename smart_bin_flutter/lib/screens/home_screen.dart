@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:async';
 import '../bin_monitor.dart';
+import '../bluetooth_permissions.dart';
 import '../widgets/astra_logo.dart';
 import '../backend/local_auth_backend.dart';
 import '../backend/bin_level_service.dart';
@@ -95,6 +96,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _openBluetoothMonitor() async {
     try {
+      final permissionsGranted = await ensureBluetoothPermissions();
+      if (!permissionsGranted) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bluetooth permissions are required to continue.'),
+          ),
+        );
+        return;
+      }
+
       final devices = await FlutterBluetoothSerial.instance.getBondedDevices();
       if (!mounted) return;
 
@@ -140,7 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (_) => BinLevelMonitor(device: selectedDevice),
         ),
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Bluetooth navigation error: $e');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

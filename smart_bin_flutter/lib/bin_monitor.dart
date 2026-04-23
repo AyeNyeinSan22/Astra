@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
+import 'bluetooth_permissions.dart';
+
 class BinLevelMonitor extends StatefulWidget {
   final BluetoothDevice device;
 
@@ -39,6 +41,21 @@ class _BinLevelMonitorState extends State<BinLevelMonitor> {
 
   Future<void> _connectToDevice() async {
     try {
+      final permissionsGranted = await ensureBluetoothPermissions();
+      if (!permissionsGranted) {
+        if (!mounted) return;
+        setState(() {
+          _isConnecting = false;
+          _isConnected = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Bluetooth permissions are required to connect.'),
+          ),
+        );
+        return;
+      }
+
       final connection =
           await BluetoothConnection.toAddress(widget.device.address);
       if (!mounted) {
@@ -61,7 +78,8 @@ class _BinLevelMonitorState extends State<BinLevelMonitor> {
           });
         },
       );
-    } catch (_) {
+    } catch (e) {
+      debugPrint('Bluetooth connect error: $e');
       if (!mounted) return;
       setState(() {
         _isConnecting = false;
@@ -92,12 +110,18 @@ class _BinLevelMonitorState extends State<BinLevelMonitor> {
 
       if (!mounted) return;
       setState(() {
-        _plasticLevel = (plastic.clamp(0, 100)).toDouble();
-        _paperLevel = (paper.clamp(0, 100)).toDouble();
-        _metalLevel = (metal.clamp(0, 100)).toDouble();
+        _plasticLevel = _clampLevel(plastic);
+        _paperLevel = _clampLevel(paper);
+        _metalLevel = _clampLevel(metal);
       });
     }
   }
+
+  double _clampLevel(double value) => value < 0
+      ? 0
+      : value > 100
+          ? 100
+          : value;
 
   Future<void> _sendCommand(String command) async {
     if (_connection == null || !_isConnected) return;
@@ -155,7 +179,11 @@ class _BinLevelMonitorState extends State<BinLevelMonitor> {
   }
 
   Widget _buildLevelTile(String label, double value, Color color) {
-    final progress = (value / 100).clamp(0, 1);
+    final progress = value <= 0
+        ? 0.0
+        : value >= 100
+            ? 1.0
+            : value / 100;
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -171,7 +199,7 @@ class _BinLevelMonitorState extends State<BinLevelMonitor> {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(
-                value: progress.toDouble(),
+                value: progress,
                 minHeight: 12,
                 backgroundColor: color.withValues(alpha: 0.15),
                 valueColor: AlwaysStoppedAnimation<Color>(color),
