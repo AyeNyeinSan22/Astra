@@ -5,6 +5,7 @@ import 'dart:async';
 import '../widgets/astra_logo.dart';
 import '../backend/local_auth_backend.dart';
 import '../backend/bin_level_service.dart';
+import '../wifi_bin_monitor.dart';
 import 'settings_screen.dart';
 import 'edit_profile_screen.dart';
 import 'scanner_opening_screen.dart';
@@ -199,6 +200,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 16),
                   Expanded(child: _buildBinLevelCard('Plastic Bin', _plasticLevel, Colors.blue)),
                 ],
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const WifiBinMonitor()),
+                  );
+                },
+                child: const Text('Connect Smart Bin (Wi-Fi)'),
               ),
               const SizedBox(height: 28),
 
