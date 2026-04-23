@@ -1,0 +1,14 @@
+# Flutter
+build/
+.dart_tool/
+.packages
+android/.gradle/
+android/local.properties
+
+# Python
+__pycache__/
+*.pyc
+.env
+
+# macOS
+.DS_Store

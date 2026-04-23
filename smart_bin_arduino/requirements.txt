@@ -1,0 +1,17 @@
+#smart_bin_backend/
+tensorflow>=2.10
+numpy
+opencv-python
+matplotlib
+scikit-learn
+pillow
+tqdm
+kaggle
+flask
+flask-cors
+pyserial
+
+//Flutter
+camera: ^0.10.5
+  tflite_flutter: 0.10.4
+  image: ^4.1.3
