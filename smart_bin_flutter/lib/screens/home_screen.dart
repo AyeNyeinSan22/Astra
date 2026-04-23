@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:async';
+import '../bin_monitor.dart';
 import '../widgets/astra_logo.dart';
 import '../backend/local_auth_backend.dart';
 import '../backend/bin_level_service.dart';
@@ -88,6 +90,63 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(context, MaterialPageRoute(builder: (_) => const EcoShopScreen())).then((_) => setState(() {}));
     } else if (index == 4) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen())).then((_) => setState(() {}));
+    }
+  }
+
+  Future<void> _openBluetoothMonitor() async {
+    try {
+      final devices = await FlutterBluetoothSerial.instance.getBondedDevices();
+      if (!mounted) return;
+
+      if (devices.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No paired Bluetooth devices found.'),
+          ),
+        );
+        return;
+      }
+
+      final selectedDevice = await showModalBottomSheet<BluetoothDevice>(
+        context: context,
+        builder: (context) {
+          return SafeArea(
+            child: ListView(
+              children: [
+                const ListTile(
+                  title: Text(
+                    'Select Smart Bin Device',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ...devices.map(
+                  (device) => ListTile(
+                    leading: const Icon(Icons.bluetooth),
+                    title: Text(device.name ?? 'Unknown device'),
+                    subtitle: Text(device.address),
+                    onTap: () => Navigator.pop(context, device),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      if (!mounted || selectedDevice == null) return;
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => BinLevelMonitor(device: selectedDevice),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bluetooth access failed. Please check permissions.'),
+        ),
+      );
     }
   }
 
@@ -199,6 +258,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(width: 16),
                   Expanded(child: _buildBinLevelCard('Plastic Bin', _plasticLevel, Colors.blue)),
                 ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _openBluetoothMonitor,
+                  icon: const Icon(Icons.bluetooth_connected),
+                  label: const Text('Connect Smart Bin (Bluetooth)'),
+                ),
               ),
               const SizedBox(height: 28),
 
