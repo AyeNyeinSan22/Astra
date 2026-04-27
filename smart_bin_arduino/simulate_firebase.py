@@ -51,7 +51,7 @@ def main():
                 "plastic":      plastic,
                 "paper":        paper,
                 "metal":        metal,
-                "last_updated": datetime.datetime.utcnow().isoformat() + "Z",
+                "last_updated": datetime.datetime.now(datetime.timezone.utc).isoformat(),
             }
             try:
                 r = requests.put(url, json=payload, timeout=5)

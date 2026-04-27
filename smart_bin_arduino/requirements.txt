@@ -1,9 +1,12 @@
 # Python dependencies for the smart bin edge components.
 # Install with:  pip install -r requirements.txt
 
-# Vision detector (vision_detector.py) – webcam inference on PC
+# Vision detector (vision_detector.py) – webcam inference on PC.
+# Install tflite-runtime for a lighter package, or tensorflow for the full SDK.
+# Choose ONE:
 opencv-python
-tflite-runtime   # lightweight TFLite inference; use tensorflow if unavailable
+tflite-runtime   # lightweight (recommended for Raspberry Pi / edge devices)
+# tensorflow     # full SDK alternative – uncomment if tflite-runtime fails
 
-# Firebase simulation (simulate_firebase.py)
+# Firebase simulation and bridge HTTP calls
 requests

@@ -96,7 +96,7 @@ def _push_to_firebase(plastic: int, paper: int, metal: int) -> None:
         "plastic":      plastic,
         "paper":        paper,
         "metal":        metal,
-        "last_updated": datetime.datetime.utcnow().isoformat() + "Z",
+        "last_updated": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
     try:
         response = requests.put(url, json=payload, timeout=5)
