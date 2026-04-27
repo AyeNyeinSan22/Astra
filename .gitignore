@@ -1,0 +1,52 @@
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+.venv
+venv/
+
+# ── ML artefacts (large binaries – generate locally with train_model.py) ──────
+smart_bin_flutter_backend/models/
+smart_bin_flutter_backend/exports/model.tflite
+smart_bin_flutter_backend/dataset/
+
+# ── Firebase config files (contain project-specific values) ──────────────────
+# ⚠️  Replace the placeholder file with your real credentials, but do NOT
+#     commit the real file.  Use a secrets manager instead.
+smart_bin_flutter/android/app/google-services.json
+smart_bin_flutter/ios/Runner/GoogleService-Info.plist
+smart_bin_flutter/lib/firebase_options.dart
+
+# ── Flutter ───────────────────────────────────────────────────────────────────
+**/flutter/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/pubspec.lock
+**/.packages
+**/build/
+**/.dart_tool/
+**/.idea/
+**/*.iml
+
+# ── IDE / editors ─────────────────────────────────────────────────────────────
+.idea/
+*.code-workspace
+.vscode/
+*.swp
+*.swo
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+Thumbs.db

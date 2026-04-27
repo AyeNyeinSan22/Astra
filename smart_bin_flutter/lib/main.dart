@@ -1,9 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// Ensure this import points to where you saved your opening screen!
+
+import 'firebase_options.dart';
 import 'screens/opening_screen.dart';
 
-void main() {
+/// Entry point.
+///
+/// Firebase must be initialised before [runApp] so that any widget tree
+/// that tries to use Firebase services finds them ready.
+void main() async {
+  // Required before any async work in main().
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialise Firebase using the project config in firebase_options.dart.
+  // ⚠️  Replace the placeholder values in firebase_options.dart with your
+  //     real Firebase project credentials before running.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const AuthSequenceApp());
 }
 
@@ -25,12 +41,13 @@ class AuthSequenceApp extends StatelessWidget {
           surface: const Color(0xFFF6FBF2),
         ),
         textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
-        
+
         // Minimalist Input Styling
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           fillColor: Colors.white,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
@@ -52,9 +69,11 @@ class AuthSequenceApp extends StatelessWidget {
             backgroundColor: brandGreen,
             foregroundColor: Colors.white,
             minimumSize: const Size(double.infinity, 56),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 0,
-            textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            textStyle:
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
@@ -62,8 +81,10 @@ class AuthSequenceApp extends StatelessWidget {
             foregroundColor: brandGreen,
             minimumSize: const Size(double.infinity, 56),
             side: const BorderSide(color: brandGreen, width: 1.5),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            textStyle:
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ),
       ),

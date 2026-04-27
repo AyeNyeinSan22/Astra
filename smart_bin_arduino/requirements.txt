@@ -1,17 +1,12 @@
-#smart_bin_backend/
-tensorflow>=2.10
-numpy
-opencv-python
-matplotlib
-scikit-learn
-pillow
-tqdm
-kaggle
-flask
-flask-cors
-pyserial
+# Python dependencies for the smart bin edge components.
+# Install with:  pip install -r requirements.txt
 
-//Flutter
-camera: ^0.10.5
-  tflite_flutter: 0.10.4
-  image: ^4.1.3
+# Vision detector (vision_detector.py) – webcam inference on PC.
+# Install tflite-runtime for a lighter package, or tensorflow for the full SDK.
+# Choose ONE:
+opencv-python
+tflite-runtime   # lightweight (recommended for Raspberry Pi / edge devices)
+# tensorflow     # full SDK alternative – uncomment if tflite-runtime fails
+
+# Firebase simulation and bridge HTTP calls
+requests
